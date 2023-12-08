@@ -1,35 +1,41 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
+import { useEffect, useState } from 'react'
 import './App.css'
+import AllCountries from './AllCountries'
+import MyCountries from './MyCountries'
 
-function App() {
-  const [count, setCount] = useState(0)
+export default function App() {
+  const [allCountries, setAllCountries] = useState([])
+  const [myCountries, setMyCountries] = useState([])
 
+  const fetchCountries = async () => {
+    try {
+      const response = await fetch('https://restcountries.com/v3.1/region/europe')
+      const data = await response.json()
+      setAllCountries(data)
+    } catch(err) {
+      console.log(err)
+    }
+  }
+  useEffect(() => {
+    fetchCountries()
+  }, [])
+
+  const addToList = (country) => {
+    setMyCountries([...myCountries, country])
+  }
+  console.log(myCountries)
   return (
+    // get list of countries from api
+    // display country names
+    // show button to add to my personal list of countries i want to visit
+    // button should become unclickable so i cant add same country multiple times
+    // also show names for my countries
+    // add button that deletes a country from my personal list
+    // have button that switches from my personal list and all countries list
     <>
-      <div>
-        <a href="https://vitejs.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.jsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
+      <AllCountries allCountries={allCountries} addToList={addToList}/>
+      <MyCountries />
     </>
   )
 }
 
-export default App
